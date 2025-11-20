@@ -1,37 +1,6 @@
-# ClydeBank Coffee Shop Simulator 4000
-# Copyright (c) 2023 ClydeBank Media, All Rights Reserved.
-
-# Import random module
 import random
-
-def welcome():
-    print("ClydeBank Coffee Shop Simulator 4000, Version 1.00")
-    print("Copyright (c) 2025 ClydeBank Media, All Rights Reserved.\n")
-    print("Let's collect some information before we start the game.\n")
-
-def prompt(display="Please input a string", require=True):
-    if require:
-        s = False
-        while not s:
-            s = input(display + " ")
-    else:
-        s = input(display + " ")
-    return s
-
-def convert_to_float(s):
-    # If conversion fails, assign 0 to it
-    try:
-        f = float(s)
-    except ValueError:
-        f = 0
-    return f
-
-def x_of_y(x, y):
-    num_list = []
-    # Return a list of x copies of y
-    for i in range(x):
-        num_list.append(y)
-    return num_list
+import re
+from utilities import *
 
 class CoffeeShopSimulator:
     # Minimum and maximum temperatures
@@ -140,16 +109,3 @@ class CoffeeShopSimulator:
         # Generate a random temperature between TEMP_MIN and TEMP_MAX
         # We'll consider seasons later on, but this is good enough for now
         return random.choice(self.temps)
-
-# Print welcome message
-welcome()
-
-# Get name and store name
-t_name = prompt("What is your name?")
-t_shop_name = prompt("What is the name of your coffee shop?")
-
-# Create the game object
-game = CoffeeShopSimulator(t_name, t_shop_name)
-
-# Run the game
-game.run()

@@ -26,14 +26,16 @@ This project showcases Python fundamentals through a practical, real-world appli
 ## How to Run
 
 ```bash
-python coffee.py
+python main.py
 ```
 
 The game will prompt you for your name and coffee shop name, then begin the daily simulation loop where you make business decisions.
 
 ## Project Structure
 
-- `coffee.py` - Main game implementation with business logic and user interface
+- `main.py` - Project entry point; starts the coffee shop simulator
+- `coffee_shop_simulator.py` - Core simulator and game logic
+- `utilities.py` - Helper functions and utilities used across the project
 - `README.md` - Project documentation
 - `LICENSE` - Copyright and licensing information
 
