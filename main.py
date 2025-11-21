@@ -17,3 +17,5 @@ t_shop_name = prompt("What do you want to name your coffee shop?")
 # Create the game object
 game = CoffeeShopSimulator(t_name, t_shop_name)
 game.run()
+
+print(f"\nThanks for playing {t_name}. Have a great rest of your day!\n")
