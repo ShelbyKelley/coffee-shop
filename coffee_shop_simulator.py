@@ -1,7 +1,7 @@
+import pickle
 import random
 import re
 import numpy
-from utilities import *
 
 class CoffeeShopSimulator:
     # Minimum and maximum temperatures
@@ -12,60 +12,74 @@ class CoffeeShopSimulator:
     # (Higher produces more realistic curve)
     SERIES_DENSITY = 300
 
-    def __init__(self, player_name, shop_name):
-        # Set player and show names
-        self.player_name = player_name
-        self.shop_name = shop_name
+    # Save game file
+    SAVE_FILE = "savegame.dat"
+
+    def __init__(self):
+        # Get name and store name
+        print("Let's collect some information before we start the game.\n")
+        self.player_name = self.prompt("What is your name?")
+        self.shop_name = self.prompt("What do you want to name your coffee shop?")
+
         # Current day number
         self.day = 1
+
         # Cash on hand at start
         self.cash = 100.00
+
         # Inventory at start
         self.coffee_inventory = 100
+
         # Sales list
         self.sales = []
+
         # Possible temperatures
         self.temps = self.make_temp_distribution()
 
     def run(self):
         print(f"\nOk, Let's get started. Have fun {self.player_name}!")
+
         # The main game loop
         running = True
         while running:
             # Display the day and add a "fancy" text affect
             self.day_header()
+
             # Get the weather
             temperature = self.weather
+
             # Display the cash and weather
             self.daily_stats(temperature)
 
             # Get price of a cup of coffee (but provide an escape hatch)
-            response = prompt("What do you want to charge per cup of coffee? (type exit to quit)")
+            response = self.prompt("What do you want to charge per cup of coffee? (type exit to quit)")
             if re.search("^exit", response, re.IGNORECASE):
                 running = False
                 continue
             else:
-                cup_price = convert_to_float(response)
+                cup_price = self.convert_to_float(response)
             
             # Do they want to buy more coffee inventory
             print("\nIt cost $1 for the necessary inventory to make a cup of coffee.")
-            response = prompt("Want to buy more so you can make more coffee? (hit ENTER for none or enter number)", False)
+            response = self.prompt("Want to buy more so you can make more coffee? (hit ENTER for none or enter number)", False)
             if response:
                 if not self.buy_coffee(response):
                     print("Could not buy additional coffee.")
 
             # Get advertising budget
             print("\nYou can buy advertising to help promote sales.")
-            advertising = convert_to_float(prompt("How much do you want to spend on advertising (0 for none)?", False))
+            advertising = self.convert_to_float(self.prompt("How much do you want to spend on advertising (0 for none)?", False))
             # Deduct advertising from cash on hand
             self.cash -= advertising
 
             # Simulate today's sales
             cups_sold = self.simulate(temperature, advertising, cup_price)
             gross_profit = cups_sold * cup_price
+
             # Display the results
             print(f"You sold {cups_sold} cups of coffee today.")
             print(f"You made ${gross_profit:.2f} today.")
+
             # Add the profit to our coffers
             self.cash += gross_profit
             # Subtract inventory
@@ -79,9 +93,14 @@ class CoffeeShopSimulator:
             # Before we loop, add a day
             self.increment_day()
 
+            # Save the game
+            with open(self.SAVE_FILE, mode = "wb") as f:
+                pickle.dump(self, f)
+
     def simulate(self, temperature, advertising, cup_price):
         # Find out how many cups were sold
         cups_sold = self.daily_sales(temperature, advertising, cup_price)
+
         # Save the sames data for today
         self.sales.append({
             "day": self.day,
@@ -91,6 +110,7 @@ class CoffeeShopSimulator:
             "cup_price": cup_price,
             "cups_sold": cups_sold
         })
+
         # We technically don't need this, but why make the nexxt step
         # read from the sales list when we have the data right here
         return cups_sold
@@ -111,9 +131,11 @@ class CoffeeShopSimulator:
     def make_temp_distribution(self):
         # Create series of numbers between TEMP_MIN and TEMP_MAX
         series = numpy.linspace(self.TEMP_MIN, self.TEMP_MAX, self.SERIES_DENSITY)
+
         # Obtain mean and stardard deviation from the series
         mean = numpy.mean(series)
         std_dev = numpy.std(series)
+
         # Calculate probability density and return the list it creates
         return (numpy.pi * std_dev) * numpy.exp(-0.5 * ((series - mean) / std_dev) ** 2)
 
@@ -130,10 +152,13 @@ class CoffeeShopSimulator:
     def daily_sales(self, temperature, advertising, cup_price):
         # Randomize advertising effectiveness
         adv_coefficient = random.randint(20, 80) / 100
+
         # Higher priced cofee doesn't sell as well
         price_coefficient = int((cup_price * (random.randint(50, 250) / 100)))
+
         # Run the sales figures!
         sales = int((self.TEMP_MAX - temperature) * (advertising * adv_coefficient))
+
         # If price is too high, we don't sell anything
         if price_coefficient > sales:
             sales = 0
@@ -143,6 +168,7 @@ class CoffeeShopSimulator:
         if sales > self.coffee_inventory:
             sales = self.coffee_inventory
             print("You would have sold more coffee but you ran out. Be sure to buy more inventory.")
+
         return sales
     
     @property
@@ -150,3 +176,30 @@ class CoffeeShopSimulator:
         # Generate a random temperature between TEMP_MIN and TEMP_MAX
         # We'll consider seasons later on, but this is good enough for now
         return int(random.choice(self.temps))
+    
+    @staticmethod
+    def prompt(display="Please input a string", require=True):
+        if require:
+            s = False
+            while not s:
+                s = input(display + " ")
+        else:
+            s = input(display + " ")
+        return s
+    
+    @staticmethod
+    def convert_to_float(s):
+        # If conversion fails, assign 0 to it
+        try:
+            f = float(s)
+        except ValueError:
+            f = 0
+        return f
+    
+    @staticmethod
+    def x_of_y(x, y):
+        num_list = []
+        # Return a list of x copies of y
+        for i in range(x):
+            num_list.append(y)
+        return num_list
