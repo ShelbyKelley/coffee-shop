@@ -1,9 +1,16 @@
+import logging
+import numpy
 import pickle
 import random
 import re
-import numpy
 
 class CoffeeShopSimulator:
+    # Configure the logger
+    logging.basicConfig(
+        format = "%(levelname)s: %(message)s",
+        level = logging.ERROR
+    )
+
     # Minimum and maximum temperatures
     TEMP_MIN = 20
     TEMP_MAX = 90
@@ -119,6 +126,7 @@ class CoffeeShopSimulator:
         try:
             i_amount = int(amount)
         except ValueError:
+            logging.error("You did not enter a valid number.")
             return False
 
         if i_amount <= self.cash:
@@ -126,6 +134,7 @@ class CoffeeShopSimulator:
             self.cash -= i_amount
             return True
         else:
+            logging.error("You tried to spend money you do not have.")
             return False
 
     def make_temp_distribution(self):
@@ -194,6 +203,7 @@ class CoffeeShopSimulator:
             f = float(s)
         except ValueError:
             f = 0
+            logging.error("You entered an invalid number, value set to zero.")
         return f
     
     @staticmethod
