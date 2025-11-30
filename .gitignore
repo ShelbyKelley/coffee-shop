@@ -208,3 +208,6 @@ __marimo__/
 
 # Scratch files
 scratch/
+
+# Saved game sata
+savegame.dat

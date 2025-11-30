@@ -205,11 +205,3 @@ class CoffeeShopSimulator:
             f = 0
             logging.error("You entered an invalid number, value set to zero.")
         return f
-    
-    @staticmethod
-    def x_of_y(x, y):
-        num_list = []
-        # Return a list of x copies of y
-        for i in range(x):
-            num_list.append(y)
-        return num_list
