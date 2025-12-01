@@ -25,19 +25,47 @@ This project showcases Python fundamentals through a practical, real-world appli
 
 ## How to Run
 
+### Prerequisites
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Running the Game
+
 ```bash
 python main.py
 ```
 
 The game will prompt you for your name and coffee shop name, then begin the daily simulation loop where you make business decisions.
 
+### Running Tests
+
+Execute the test suite:
+
+```bash
+python -m unittest coffee_shop_simulator_tests.py
+```
+
+Or with verbose output:
+
+```bash
+python -m unittest coffee_shop_simulator_tests.py -v
+```
+
+Tests are run automatically on push and pull requests via GitHub Actions (see `.github/workflows/ci.yml`).
+
 ## Project Structure
 
 - `main.py` - Project entry point; starts the coffee shop simulator
-- `coffee_shop_simulator.py` - Core simulator and game logic
-- `utilities.py` - Helper functions and utilities used across the project
+- `coffee_shop_simulator.py` - Core simulator and game logic using NumPy for temperature distribution
+- `coffee_shop_simulator_tests.py` - Unit tests covering game logic, sales calculations, and edge cases
 - `README.md` - Project documentation
 - `LICENSE` - Copyright and licensing information
+- `requirements.txt` - Project dependencies (NumPy 2.0)
+- `.github/workflows/ci.yml` - GitHub Actions workflow for continuous integration
 
 ## Learning Journey
 
